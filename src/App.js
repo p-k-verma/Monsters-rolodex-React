@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import CardList from './card-list/CardList';
+import SearchBox from './search-box/Search-box';
+import "./App.css"
 // import logo from './logo.svg'
 export default class App extends Component {
     constructor(){
         console.log("1");
         super();
         this.state = {
-            monsters: []
+            monsters: [],
+            searchField: "",
         }
     }
 
@@ -23,17 +27,26 @@ export default class App extends Component {
         })
     }
 
+    onsearchChange = (event) => {
+        const searchField = event.target.value.toLocaleLowerCase();
+        this.setState(() => {
+            return { searchField }
+        })
+    }
+
   render() {
     console.log("2");
+
+    const filteredMonsters = this.state.monsters.filter((monster) => {
+        return monster.name.toLocaleLowerCase().includes(this.state.searchField);
+    });
+
     return (
-        <>
-            <div>App</div>
-            { this.state.monsters.map((dataw)=>{
-               return <p key={dataw.name}>Hi this is for the {dataw.name} </p>
-            }) }
-            {/* <button onClick={()=>this.setState({string: "bccccc"})}>Chnge the text</button> */}
-            {/* <img src={ logo } alt="" /> */}
-        </>
+        <div className='App'>
+        <h1 className='app-title'>Monsters Rolodex</h1>
+            <SearchBox onChangeHandler = { this.onsearchChange }/>
+            <CardList monsters = { filteredMonsters } />
+        </div>
     )
   }
 }
